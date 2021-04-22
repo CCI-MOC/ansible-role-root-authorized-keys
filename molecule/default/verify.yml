@@ -1,0 +1,31 @@
+- name: Verify
+  hosts: all
+  gather_facts: false
+  become: true
+  tasks:
+  - name: check that authorized_keys exists
+    stat:
+      path: /root/.ssh/authorized_keys
+    register: keys_check
+
+  - name: assert that authorized_keys eixsts
+    assert:
+      that: keys_check.stat.exists
+
+  - name: get authorized_keys content
+    command: cat /root/.ssh/authorized_keys
+    register: keys
+
+  - name: check for expected keys
+    assert:
+      that: item in keys.stdout_lines
+    loop:
+      - "ssh-rsa CCCC... mallory@example.com"
+      - "ssh-rsa DDDD... eustace@example.com"
+
+  - name: check for absent keys
+    assert:
+      that: item not in keys.stdout_lines
+    loop:
+      - "ssh-rsa AAAA... alice@example.com"
+      - "ssh-rsa BBBB... bob@example.com"

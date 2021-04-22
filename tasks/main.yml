@@ -1,0 +1,7 @@
+- name: install root authorized keys
+  become: true
+  authorized_key:
+    exclusive: true
+    manage_dir: true
+    user: root
+    key: "{{ root_authorized_keys|default([])|join('\n') }}"

@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include ansible-role-root-authorized-keys"
+      include_role:
+        name: "ansible-role-root-authorized-keys"
